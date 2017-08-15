@@ -1,4 +1,4 @@
-<?php if (!defined('THINK_PATH')) exit(); /*a:1:{s:60:"D:\www\tp5\public/../application/admin\view\index\index.html";i:1502706239;}*/ ?>
+<?php if (!defined('THINK_PATH')) exit(); /*a:1:{s:60:"D:\www\tp5\public/../application/admin\view\index\index.html";i:1502787548;}*/ ?>
 <!DOCTYPE html>
 <html>
 
@@ -21,6 +21,8 @@
     <link href="__admin_style__/css/font-awesome.min.css?v=4.4.0" rel="stylesheet">
     <link href="__admin_style__/css/animate.min.css" rel="stylesheet">
     <link href="__admin_style__/css/style.min.css?v=4.0.0" rel="stylesheet">
+        <!-- 验证 -->
+    <link rel="stylesheet" href="__admin_style__/dist/css/bootstrapValidator.css"/>
 </head>
 
 <body class="fixed-sidebar full-height-layout gray-bg" style="overflow:hidden">
@@ -38,8 +40,10 @@
                             </span>
                             <a data-toggle="dropdown" class="dropdown-toggle" href="#">
                                 <span class="clear">
-                               <span class="block m-t-xs"><strong class="font-bold">xiaolizi</strong></span>
-                                <span class="text-muted text-xs block">超级管理员<b class="caret"></b></span>
+                                    <span class="block m-t-xs">
+                                        <strong class="font-bold"><?php echo session('session_user.user_name'); ?></strong>
+                                    </span>
+                                    <span class="text-muted text-xs block">超级管理员<b class="caret"></b></span>
                                 </span>
                             </a>
                             <ul class="dropdown-menu animated fadeInRight m-t-xs">
@@ -53,7 +57,7 @@
                                
 									<li class="divider"></li>
                                 <li>
-									<a href="login.html">安全退出</a>
+									<a href="<?php echo url('login/logout'); ?>">安全退出</a>
                                 </li>
                             </ul>
                         </div>
@@ -149,7 +153,7 @@
                 </button>
                 <nav class="page-tabs J_menuTabs">
                     <div class="page-tabs-content">
-                        <a href="javascript:;" class="active J_menuTab" data-id="index_v1.html">首页</a>
+                        <a href="javascript:;" class="active J_menuTab" data-id="<?php echo url('index/welcome'); ?>">首页</a>
                     </div>
                 </nav>
                 <button class="roll-nav roll-right J_tabRight"><i class="fa fa-forward"></i>
@@ -283,18 +287,19 @@
 						<div class="row">
 							<div class="col-sm-10">
 								<h3 class="m-t-none m-b">修改密码</h3>
-								<form role="form">
+								<form role="form" id="myform" action="<?php echo url('login/password'); ?>">
+                                    <?php echo token(); ?>
 									<div class="form-group">
 										<label>原密码</label>
-										<input type="email" placeholder="请输入原密码" class="form-control">
+										<input type="password" placeholder="请输入原密码" class="form-control" name="old_password">
 									</div>
 									<div class="form-group">
 										<label>新密码：</label>
-										<input type="password" placeholder="请输入新密码" class="form-control">
+										<input type="password" placeholder="请输入新密码" class="form-control" name="password">
 									</div>
 									<div class="form-group">
 										<label>确认密码：</label>
-										<input type="password" placeholder="请输入确认密码" class="form-control">
+										<input type="password" placeholder="请输入确认密码" class="form-control" name="password_confirm">
 									</div>
 									<div>
 										<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
@@ -327,8 +332,11 @@
     <script src="__admin_style__/js/plugins/layer/layer.min.js"></script>
    <!--   <script src="layer/layer.js"></script> -->
     <script src="__admin_style__/js/hplus.min.js?v=4.0.0"></script>
-    <script type="text/javascript" src="__admin_style__/js/contabs.min.js"></script>
+    <script src="__admin_style__/js/contabs.min.js"></script>
     <script src="__admin_style__/js/plugins/pace/pace.min.js"></script>
+
+    <!-- 验证 -->
+    <script src="__admin_style__/dist/js/bootstrapValidator.js"></script>
 	<!-- <script>
 		function back_top(){
 		alert(111);
@@ -336,6 +344,103 @@
 		}
 	
 	</script> -->
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('#myform').bootstrapValidator({
+                    message: '登录数据验证',
+                    feedbackIcons: {
+                        valid: 'glyphicon glyphicon-ok',
+                        invalid: 'glyphicon glyphicon-remove',
+                        validating: 'glyphicon glyphicon-refresh'
+                    },
+                    fields: {
+                        old_password: {
+                            message: '账号',
+                            validators: {
+                                notEmpty: {
+                                    message: '请输入原密码'
+                                },
+                                stringLength: {
+                                    min: 5,
+                                    max: 24,
+                                    message: '账号的长度在5-24个字符'
+                                },
+                                regexp: {
+                                    regexp: /^[a-zA-Z0-9_\.]+$/,
+                                    message: '账号格式不正确'
+                                }
+                            }
+                        },
+                       
+                        password: {
+                            validators: {
+                                notEmpty: {
+                                    message: '请输入密码'
+                                }
+                                ,
+                                stringLength: {
+                                    min: 6,
+                                    max: 18,
+                                    message: '密码的长度在6-18个字符'
+                                },
+                                regexp: {
+                                    regexp: /^[a-zA-Z0-9_\.]+$/,
+                                    message: '密码格式不正确'
+                                },
+                            }
+                        },
+                        password_confirm: {
+                            validators: {
+                                notEmpty: {
+                                    message: '请确认密码'
+                                }
+                                ,
+                                stringLength: {
+                                    min: 6,
+                                    max: 18,
+                                    message: '密码的长度在6-18个字符'
+                                },
+                                regexp: {
+                                    regexp: /^[a-zA-Z0-9_\.]+$/,
+                                    message: '密码格式不正确'
+                                },
+                                identical: {
+                                        field: 'password',
+                                        message: '两次密码输入不一致'
+                                }
+                            }
+                        }
+
+                        
+                    }
+                })
+                .on('success.form.bv', function(e) {
+                    // Prevent form submission
+                    e.preventDefault();
+
+                    // Get the form instance
+                    var $form = $(e.target);
+
+                    // Get the BootstrapValidator instance
+                    var bv = $form.data('bootstrapValidator');
+
+                    // 使用ajax提交
+                    $.post($form.attr('action'), $form.serialize(), function(rs) {
+                       if (rs.status == 0) {
+                           layer.msg(rs.msg);
+                           setTimeout(function (){
+                                window.location.href = "<?php echo url('Login/logout'); ?>";
+
+                           },1500);
+                       }
+
+                       layer.msg(rs.msg);
+                        
+                    }, 'json');
+                });
+        });
+    </script>
 </body>
 
 </html>

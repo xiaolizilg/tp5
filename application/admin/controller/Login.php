@@ -4,7 +4,8 @@ namespace app\admin\controller;
 
 use think\Request;
 use app\admin\controller\Base;
-use app\admin\logic\User;
+use app\admin\logic\UserLogin;
+use app\admin\logic\UserPassword;
 
 class Login extends Base
 {
@@ -21,7 +22,6 @@ class Login extends Base
 
     public function index(){
         
-   
         return view('login');
 
     }
@@ -32,12 +32,10 @@ class Login extends Base
     {
        
         if (!Request::instance()->isPost()){
-            return json(['msg'=>'非法操作','code'=>'200']);
+            return json(['msg'=>lang('lang_request_error'),'status'=>'1']);
         }
-        $user  = new User();
-        $user->loginVerify(input('post.'));
-        $this->success('登录成功', 'index/index');
-
+        $user_login  = new UserLogin();
+        return  $user_login->loginVerify(input('post.'));
     }
 
     //退出登录
@@ -45,6 +43,18 @@ class Login extends Base
     {
         session(null);
         $this->redirect('login/index');   
+    }
+
+
+    //修改密码
+    public   function  password ()
+    {   
+        if(!Request::instance()->isPost()){
+            return json(['msg'=>lang('lang_request_error'),'status'=>'1']);  
+        }
+
+        $user_password  = new UserPassword();
+        return  $user_password->savePassword(input('post.'));
     }
 
    
